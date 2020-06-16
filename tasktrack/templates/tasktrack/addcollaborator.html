@@ -1,0 +1,38 @@
+{% extends "tasktrack/outline.html" %}
+    {% block content %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container">
+                    <h2 style="margin-top: 1em;"> Add a Collaborator </h2>
+                    <form style="margin-top: 1em;" method="POST">
+                        <div class="input-group">
+                            {% csrf_token %}
+                            {{form.username}}                        
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if user_list %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Send Request</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <form action="{% url 'tasktrack:send_collaborator_request' %}" method="POST">
+                                    {% csrf_token %}
+                                    {% for user in user_list %}
+                                        <td>{{user.username}}</td>
+                                        <td><button class="btn btn-outline-primary" type="submit" name="request_user_id" value="{{user.id}}">Send</button></td>
+                                    {% endfor %}
+                                </form>
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </main>
+        </div>
+    {% endblock %}

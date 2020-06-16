@@ -1,0 +1,23 @@
+{% extends "tasktrack/outline.html" %}
+    {% block content %}
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container">
+                <h2 style="margin-top: 1em;"> Change Last Name </h2>
+                <table class="table table-hover">
+                    <tbody>                            
+                        <tr>
+                            <td>First Name</td>
+                            <td><form  method="POST"><div class="input-group mb-3">
+                                {% csrf_token %}
+                                {{form.new_name}}
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-success" type="submit" id="button-addon2">Change</button>
+                                </div>
+                              </div></form></td>
+                        </tr>
+                    </tbody> 
+                </table>
+            </div>
+        </main>
+    {% endblock %}

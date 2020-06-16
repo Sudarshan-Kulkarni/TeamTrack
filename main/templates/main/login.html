@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        {% load static %}
+    <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'main/assets/css/login.css' %}"/>
+    </head>
+    <body>
+        <div class="login-page">
+            <div class="form">
+            <form class="register-form" action="{% url 'main:register_redirect' %}" method="POST">
+                {% csrf_token %}
+                <!-- <input type="text" name="username" placeholder="name" /> -->
+                {{register_form.username}}
+                {{register_form.email}}
+                {{register_form.password1}}
+                {{register_form.password2}}
+                
+                <!-- <input type="password" name="password" placeholder="password"/>
+                <input type="text" name="email" placeholder="email address"/>
+                 -->
+                <button>create</button>
+                <p class="message">Already registered?<a href="#">Sign In</a></p>
+            </form>
+            <form class="login-form" action="{% url 'main:login_redirect' %}" method="POST">
+                <!-- <input type="text" name="email" placeholder="email address"/>
+                <input type="password" name="password" placeholder="password"/>
+                 -->
+                 {% csrf_token %}
+                {{login_form.username}}
+                {{login_form.password}}
+                <button>login</button>
+                <p class="message">Not registered?<a href="#">Create an account</a></p>
+            </form>
+            </div>
+        </div>
+
+
+        <!-- Scripts -->
+        <script src="{% static 'main/assets/js/jquery.min.js' %}"></script>
+        <script src="{% static 'main/assets/js/login.js' %}"></script>
+        <script src="{% static 'main/assets/js/browser.min.js' %}"></script>
+		<script src="{% static 'main/assets/js/breakpoints.min.js' %}"></script>
+		<script src="{% static 'main/assets/js/util.js' %}"></script>
+		<script src="{% static 'main/assets/js/main.js' %}"></script>
+    </body>
+</html>

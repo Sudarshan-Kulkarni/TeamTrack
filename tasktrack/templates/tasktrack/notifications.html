@@ -1,0 +1,33 @@
+{% extends "tasktrack/outline.html" %}
+    {% block content %}
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container">
+                <h2 style="margin-top: 1em;">Notifications</h2>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>From</th>
+                            <th>Accept/Reject</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {% for notification in request.session.notifications %}                           
+                        <tr>
+                            <td>Collaborator</td>
+                            <td>{{notification.username}}</td>
+                            <td><div class="btn-group" role="group" aria-label="Basic example">
+                                <form action="{% url 'tasktrack:handle_notification' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" name="accept_collaborator_request" value="{{notification.id}}" class="btn btn-secondary">Accept</button>
+                                    <button type="submit" name="reject_collaborator_request" value="{{notification.id}}" class="btn btn-secondary">Reject</button>  
+                                </form>                              
+                              </div></td>                            
+                        </tr>
+                        {% endfor %}
+                    </tbody> 
+                </table>
+            </div>
+        </main>
+    {% endblock %}
