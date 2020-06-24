@@ -3,17 +3,21 @@ from django.contrib.auth.models  import User
 from django.http import HttpResponse
 from django.contrib import messages
 
-from .forms import NewNameForm, SearchForm
-from .queries import search_for_user_username, send_collaborator_request_db, handle_collaborator_request
+from .forms import NewNameForm, SearchForm, NewTaskForm
+from .queries import search_for_user_username, send_collaborator_request_db, handle_collaborator_request, get_all_collaborators, write_new_task, get_all_user_tasks
 
 def user_homepage(request):
     user = request.user
+
+    tasks = get_all_user_tasks(user)
+
     if request.session.get('collaborator_request_sent', False):
         messages.success(request, "Collaborator request sent!")
         request.session['collaborator_request_sent'] = False
 
     context = {
-        'username':user.username
+        'username':user.username,
+        'tasks':tasks
     }
     return render(request, 'tasktrack/homepage.html', context)
 
@@ -104,6 +108,7 @@ def handle_notification(request):
     if request.method=='POST':
         form_data = request.POST
         '''
+        Actions -
         1 - accept
         0 - reject
         '''
@@ -112,3 +117,33 @@ def handle_notification(request):
         handle_collaborator_request(user.id, action_id, action)
         request.session['notifications'] = list(filter(lambda x: int(x['id'])!=int(action_id), request.session['notifications']))
     return redirect('tasktrack:homepage')
+
+def collaborators_view(request):
+    user = request.user
+    collaborator_list = get_all_collaborators(user.id)
+    context = {
+        'username': user.username,
+        'collaborator_list':collaborator_list
+    }
+    return render(request, 'tasktrack/collaborators.html', context)
+
+def create_new_task(request):
+    user = request.user
+    if request.method=='POST':
+        filled_form = NewTaskForm(user, data=request.POST)
+        if filled_form.is_valid():
+            filled_form = filled_form.cleaned_data
+            task_name = filled_form['task_name']
+            task_description = filled_form['task_description']
+            task_collaborators = filled_form['task_collaborators']
+
+            write_new_task(task_name, task_description, user, task_collaborators)
+            print(task_name,task_description,task_collaborators)
+            return redirect('tasktrack:createnewtask')
+
+    form = NewTaskForm(user)
+    context = {
+        'user': user.username,
+        'form': form
+    }
+    return render(request, 'tasktrack/createnewtask.html', context)

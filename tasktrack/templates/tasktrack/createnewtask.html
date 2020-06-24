@@ -1,0 +1,31 @@
+{% extends "tasktrack/outline.html" %}
+    {% block content %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container">
+                    <h2 style="margin-top: 1em;"> Create a new task </h2>
+                    <form style="margin-top: 1em;" method="POST">
+                        {% csrf_token %}
+                        <h5>{{form.task_name.label}}</h5>
+                        <div class="row input-group m-3">
+                            {{form.task_name}}
+                        </div>
+
+                        <h5>{{form.task_description.label}}</h5>
+                        <div class="row input-group m-3">
+                            {{form.task_description}}
+                        </div>
+
+                        <div class="m-3">
+                            <h5>{{form.task_collaborators.label}}</h5>
+                            {{form.task_collaborators}}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div> 
+
+    {% endblock %}

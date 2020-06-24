@@ -17,7 +17,12 @@ def get_user_notifications(user_id):
         tmp = {}
         tmp['id'] = notif['id']
         other_user_id = list(filter(lambda x: int(x)!=int(user_id) , [notif.get('user_id_1_id'),notif.get('user_id_2_id')]))[0]
-        other_username = get_username_from_userid(other_user_id)
+        if other_user_id not in username_cache.keys():
+            other_username = get_username_from_userid(other_user_id)
+        else:
+            other_username = username_cache[other_user_id]
+            
         tmp['username'] = other_username
         notifications.append(tmp)
     return notifications
+

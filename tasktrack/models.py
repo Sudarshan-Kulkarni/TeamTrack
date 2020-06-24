@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.contrib.auth.models import User
 
 class Collaborators(models.Model):
@@ -22,3 +21,17 @@ class Collaborators(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user_id_1','user_id_2'], name='unique_friendship')
         ]
+
+
+class Task(models.Model):
+    users = models.ManyToManyField(User)
+    task_name = models.TextField()
+    task_description = models.TextField()
+    task_completed = models.BooleanField(default=False)
+
+class SubTask(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    users = models.ManyToManyField(User)
+    subtask_name = models.TextField()
+    subtask_description = models.TextField()
+    subtask_completed = models.BooleanField(default=False)

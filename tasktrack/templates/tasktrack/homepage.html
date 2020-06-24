@@ -6,28 +6,28 @@
                 <div class="container-fluid">
                     <h1 class="mt-4">Welcome {{username}}</h1>
                     <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Tasks are there?</li>
+                        
+                            {% if tasks|length > 0 %}
+                            <li class="breadcrumb-item active">
+                            You have {{ tasks|length }} task(s)</li>
+                            {% else %}
+                            <li class="breadcrumb-item active">
+                                Looks like you're jobless mate</li>
+                            {% endif %}
+
                     </ol>
                     <div class="row">
+                        {% for task in tasks %}
                         <div class="col-xl-3 col-md-6">
                             <div class="card bg-primary text-white mb-4">
-                                <div class="card-body">Task 1</div>
+                                <div class="card-body">{{ task.task_name }}</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
                                     <a class="small text-white stretched-link" href="">View Details</a>
                                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card bg-success text-white mb-4">
-                                <div class="card-body">Task 2</div>
-                                <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" href="">View Details</a>
-                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                         
                     </div>                    
             </main>
