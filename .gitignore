@@ -1,2 +1,13 @@
 .ini
 *.pyc
+tasktrack/
+*.pyc
+TeamTrack/
+*.pyc
+main/
+*.pyc
+main/__pycache__/views.cpython-36.pyc
+tasktrack/__pycache__/queries.cpython-36.pyc
+tasktrack/__pycache__/urls.cpython-36.pyc
+tasktrack/__pycache__/views.cpython-36.pyc
+

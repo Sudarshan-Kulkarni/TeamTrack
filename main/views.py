@@ -8,6 +8,7 @@ from django.contrib import messages
 from .forms import NewUserForm, ExistingUserForm 
 from .queries import get_user_notifications
 
+import json
 
 def login_view(request):
     login_form = ExistingUserForm()
@@ -29,9 +30,12 @@ def register_redirect(request):
             login(request,user)
             return redirect('tasktrack:homepage')
         else:
-            # TODO handle this properly 
-
-            return HttpResponse(filled_form.error_messages)
+            all_errors = json.loads(filled_form.errors.as_json())
+            print('all_errors = ',(all_errors))
+            for field,error in all_errors.items():
+                messages.error(request,field+':'+str(error[0]['message']))
+            return redirect('main:login_view')
+            
 
 def login_redirect(request):
     if request.method=='POST':
@@ -46,9 +50,16 @@ def login_redirect(request):
                 request.session['notifications'] = notifications
 
                 return redirect('tasktrack:homepage')
+            else:
+                all_errors = json.loads(filled_form.errors.as_json()).get('__all__')
+                for error in all_errors:
+                    messages.error(request,error['message'])
+                return redirect('main:login_view')
         else:
-            # TODO handle this properly
-            pass 
+            all_errors = json.loads(filled_form.errors.as_json()).get('__all__')
+            for error in all_errors:
+                messages.error(request,error['message'])
+            return redirect('main:login_view')
 def logout_user(request):
     logout(request)
     return redirect('main:login_view')

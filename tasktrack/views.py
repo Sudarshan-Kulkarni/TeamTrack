@@ -2,10 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models  import User
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required,user_passes_test
 
 from .forms import NewNameForm, SearchForm, NewTaskForm
-from .queries import search_for_user_username, send_collaborator_request_db, handle_collaborator_request, get_all_collaborators, write_new_task, get_all_user_tasks
+from .queries import search_for_user_username, send_collaborator_request_db, handle_collaborator_request, get_all_collaborators, write_new_task, get_all_user_tasks, get_task_details, check_user_is_member_of_task
 
+
+def is_user_member_of_task(user,task_id):
+    return check_user_is_member_of_task(user, task_id)
+
+
+@login_required
 def user_homepage(request):
     user = request.user
 
@@ -21,6 +28,7 @@ def user_homepage(request):
     }
     return render(request, 'tasktrack/homepage.html', context)
 
+@login_required
 def user_profile(request):
     user = request.user
     context = {
@@ -33,6 +41,7 @@ def user_profile(request):
     }
     return render(request, 'tasktrack/profile.html', context)
 
+@login_required
 def change_first_name(request):
     user = request.user
     if request.method=='POST':
@@ -50,6 +59,7 @@ def change_first_name(request):
     }
     return render(request,'tasktrack/changefirstname.html',context)
 
+@login_required
 def change_last_name(request):
     user = request.user
     if request.method=='POST':
@@ -68,6 +78,7 @@ def change_last_name(request):
     }
     return render(request,'tasktrack/changelastname.html',context)
 
+@login_required
 def add_collaborator(request):
     user = request.user
     form = SearchForm()
@@ -85,6 +96,7 @@ def add_collaborator(request):
 
     return render(request, 'tasktrack/addcollaborator.html', context)
 
+@login_required
 def send_collaborator_request(request):
     user = request.user
     if request.method=='POST':
@@ -97,12 +109,13 @@ def send_collaborator_request(request):
             return redirect('tasktrack:homepage')
         else:
             return redirect('tasktrack:addcollaborator')
-
+@login_required
 def notifications_view(request):
     user = request.user
     print(request.session.get('notifications'))
     return render(request, 'tasktrack/notifications.html')
 
+@login_required
 def handle_notification(request):
     user = request.user
     if request.method=='POST':
@@ -118,6 +131,7 @@ def handle_notification(request):
         request.session['notifications'] = list(filter(lambda x: int(x['id'])!=int(action_id), request.session['notifications']))
     return redirect('tasktrack:homepage')
 
+@login_required
 def collaborators_view(request):
     user = request.user
     collaborator_list = get_all_collaborators(user.id)
@@ -127,6 +141,7 @@ def collaborators_view(request):
     }
     return render(request, 'tasktrack/collaborators.html', context)
 
+@login_required
 def create_new_task(request):
     user = request.user
     if request.method=='POST':
@@ -147,3 +162,17 @@ def create_new_task(request):
         'form': form
     }
     return render(request, 'tasktrack/createnewtask.html', context)
+
+@login_required
+def tasks(request, task_id=None):
+    if task_id is not None:
+        if is_user_member_of_task(request.user,task_id):
+            task_details = get_task_details(task_id)  
+            context = {
+                'task_details':task_details
+            }
+            return render(request, 'tasktrack/taskdetails.html', context)
+        else:
+            return HttpResponse("not authorized")
+    else:
+        return redirect('main:login')

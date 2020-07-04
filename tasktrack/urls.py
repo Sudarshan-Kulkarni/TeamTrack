@@ -14,5 +14,6 @@ urlpatterns = [
     path('notifications/', views.notifications_view, name='notifications'),
     path('handle_notification/', views.handle_notification, name='handle_notification'),
     path('collaborators/', views.collaborators_view, name='collaborators'),
-    path('createnewtask/', views.create_new_task, name='createnewtask')
+    path('createnewtask/', views.create_new_task, name='createnewtask'),
+    path('tasks/<int:task_id>/', views.tasks, name='tasks')
 ]

@@ -73,3 +73,11 @@ def write_new_task(task_name, task_description, user, task_collaborators):
 def get_all_user_tasks(user):
     tasks = list(Task.objects.filter(users=user).values())
     return tasks
+
+def check_user_is_member_of_task(user, task_id):
+    task = Task.objects.get(id=task_id)
+    return user in task.users.all()
+
+def get_task_details(task_id):
+    task_details = Task.objects.get(id=task_id)
+    return task_details

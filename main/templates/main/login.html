@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="{% static 'main/assets/css/login.css' %}"/>
     </head>
     <body>
+        <div>
+            {% for msg in messages %}
+                <script>
+                    alert( "{{msg}}" );
+                </script>                
+            {% endfor %}
+        </div>
+
         <div class="login-page">
             <div class="form">
             <form class="register-form" action="{% url 'main:register_redirect' %}" method="POST">
